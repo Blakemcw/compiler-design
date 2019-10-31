@@ -1,0 +1,13 @@
+Name: Blake McWilliam
+SiD: 1594150
+
+Thank you to whoever is grading my assignment!
+Hope you're having a good day! :)
+
+Question about mk.test:
+-----------------------------------------------------------------------
+I noticed when running 94*.oc it marks line 7 column 10 (a ".") as an 
+invalid source character however it isn't mentioned in asg2-scanner.pdf
+that (.) is a special character. Is that something that should be 
+ignored?
+
