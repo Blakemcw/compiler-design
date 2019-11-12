@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "iosfwd": "cpp",
+        "bitset": "cpp",
+        "new": "cpp",
+        "*.y": "cpp",
+        "string": "cpp"
+    }
+}
