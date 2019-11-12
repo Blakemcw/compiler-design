@@ -1,2 +1,0 @@
-string_set.o: ../string_set/string_set.cpp ../string_set/string_set.h
-main.o: main.cpp ../string_set/string_set.h
