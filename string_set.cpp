@@ -29,8 +29,8 @@ void string_set::dump (FILE* out) {
       if (max_bucket_size < curr_size) max_bucket_size = curr_size;
       for (auto itor = set.cbegin (bucket);
            itor != set.cend (bucket); ++itor) {
-         if (need_index) fprintf (out, "string_set[%4zu]: ", bucket);
-                    else fprintf (out, "           %4s   ", "");
+         if (need_index) fprintf (out, "hash[%4zu]: ", bucket);
+                    else fprintf (out, "     %4s   ", "");
          need_index = false;
          const string* str = &*itor;
          fprintf (out, "%20zu %p->\"%s\"\n", hash_fn(*str),

@@ -17,11 +17,8 @@ size_t lexer::last_yyleng = 0;
 vector<string> lexer::filenames;
 
 astree* parser::root = nullptr;
+vector<astree*> parser::test;
 vector<astree*> tokens;
-
-// Option -D: variables
-string include_file;
-int include_file_index;
 
 const string* lexer::filename (int filenr) {
    return &lexer::filenames.at(filenr);
@@ -72,8 +69,8 @@ void lexer::include() {
       }
 
       // Creates a node for an include file for writing to .tok file.
-      yylval = new astree (-1, lexer::lloc, filename);
-      tokens.push_back(yylval);
+      astree* include_file = new astree (-1, lexer::lloc, yytext);
+      tokens.push_back(include_file);
 
       lexer::lloc.linenr = linenr - 1;
       lexer::newfilename (filename);
@@ -93,22 +90,12 @@ int lexer::badtoken (int symbol) {
 
 void lexer::printtokens(FILE* outfile) {
    for (auto x: tokens) {
-      // Commented below is to deal with option -D:
-      // its not included because i need to ask questions in class,
-      //    1. should the include file tokens still be written to .tok?
-      //       - in other words, are we just excluding debugging information?
-      // if (filenames[x->lloc.filenr].find(include_file) != std::string::npos) {
-      //    continue;
-      // } else
-
-      if (x->symbol == -1) { // Sentinel value means its an include statement
-         fprintf(outfile, "# %2u \"%-10s\"\n",
-         x->lloc.filenr,
-         x->lexinfo->data());
+      if (x->symbol == -1) { // Sentinel value means its an #include
+         fprintf(outfile, "%s\n", x->lexinfo->data());
       } else { // Otherwise it is a token
          // Format follows,
          // file# line#.offset tokenId tokenClass tokenText
-         fprintf(outfile, "  %2u %2u.%-.3u  %3i  %-10s  %-10s\n",
+         fprintf(outfile, "  %-2zu %2zu.%-.3zu  %3i  %-10s  %-10s\n",
          x->lloc.filenr,
          x->lloc.linenr,
          x->lloc.offset,
@@ -119,11 +106,17 @@ void lexer::printtokens(FILE* outfile) {
    }
 }
 
+void lexer::test_parse(){
+   for (auto file: lexer::filenames){
+      fprintf(stdout, "%s\n", file.c_str());
+   }
+}
+
 void lexer::delete_tokens(){
    // Used to delete tokens stored for .tok file.
    for (auto token: tokens)
    {
-      delete token;
+      if (token != nullptr) token = nullptr;
    }
 }
 

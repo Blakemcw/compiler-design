@@ -42,6 +42,20 @@ astree* astree::adopt_sym (astree* child, int symbol_) {
    return adopt (child);
 }
 
+astree* astree::change_symbol(int symbol_) {
+   this->symbol = symbol_;
+   return this;
+}
+
+astree* astree::clear_lexinfo() {
+   this->lexinfo = string_set::intern("");
+   return this;
+}
+
+astree* astree::copy_lloc(astree* that) {
+   this->lloc = that->lloc;
+   return this;
+}
 
 void astree::dump_node (FILE* outfile) {
    fprintf (outfile, "%p->{%s %zd.%zd.%zd \"%s\":",
@@ -68,10 +82,21 @@ void astree::dump (FILE* outfile, astree* tree) {
                    else tree->dump_node (outfile);
 }
 
+void print_hierarchy_lines(FILE* outfile, int depth) {
+   if (depth == 0) {
+      return;
+   } else {
+      fprintf (outfile, "|%*s", 3, "");
+      print_hierarchy_lines(outfile, depth - 1);
+   }
+}
+
 void astree::print (FILE* outfile, astree* tree, int depth) {
-   fprintf (outfile, "; %*s", depth * 3, "");
+   print_hierarchy_lines(outfile, depth);
+   const char *tname = parser::get_tname (tree->symbol);
+   if (strstr (tname, "TOK_") == tname) tname += 4;
    fprintf (outfile, "%s \"%s\" (%zd.%zd.%zd)\n",
-            parser::get_tname (tree->symbol), tree->lexinfo->c_str(),
+            tname, tree->lexinfo->c_str(),
             tree->lloc.filenr, tree->lloc.linenr, tree->lloc.offset);
    for (astree* child: tree->children) {
       astree::print (outfile, child, depth + 1);

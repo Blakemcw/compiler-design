@@ -16,15 +16,6 @@
 %option warn
 /*%option verbose*/
 
-/* SPECIAL SYMBOLS */
-EQ              (==)
-NE              (!=)
-LT              (<)
-LE              (<=)
-GT              (>)
-GE              (>=)
-ARROW           (->)
-
 /* RESERVED WORDS */
 IF              (if)
 ELSE            (else)
@@ -50,8 +41,20 @@ NOTNUMBER       ({MANTISSA}[Ee][+-]?)
 IDENT           ({LETTER}({LETTER}|{DIGIT})*)
 
 /* CONSTANTS */
-CHARCON         (’([^\\’\n]|\\[\\’"0nt])’)
-STRINGCON       (\"([^\\"\n]|\\[\\’"0nt])*\")
+CHARCON         ('([^\\'\n]|\\[\\'"0nt])')
+STRINGCON       (\"([^\\"\n]|\\[\\'"0nt])*\")
+
+/* SPECIAL SYMBOLS */
+EQ              (==)
+NE              (!=)
+LT              (<)
+LE              (<=)
+GT              (>)
+GE              (>=)
+ARROW           (->)
+
+L_ANGLE_BRACKET     (<(?=(.)*>))
+R_ANGLE_BRACKET     ((?)<=<(.)*)>)
 
 %%
 
@@ -81,7 +84,7 @@ STRINGCON       (\"([^\\"\n]|\\[\\’"0nt])*\")
 {PTR}           { return lexer::token (TOK_PTR);     }
 {VOID}          { return lexer::token (TOK_VOID);    }
 
-{NUMBER}        { return lexer::token (TOK_NUMBER); }
+{NUMBER}        { return lexer::token (TOK_INTCON); }
 {IDENT}         { return lexer::token (TOK_IDENT);  }
 
 {CHARCON}       { return lexer::token (TOK_CHARCON);   }
@@ -92,15 +95,18 @@ STRINGCON       (\"([^\\"\n]|\\[\\’"0nt])*\")
 "-"             { return lexer::token ('-'); }
 "*"             { return lexer::token ('*'); }
 "/"             { return lexer::token ('/'); }
+"%"             { return lexer::token ('%'); }
 "^"             { return lexer::token ('^'); }
 "("             { return lexer::token ('('); }
 ")"             { return lexer::token (')'); }
+"["             { return lexer::token ('['); }
+"]"             { return lexer::token (']'); }
 "{"             { return lexer::token ('{'); }
 "}"             { return lexer::token ('}'); }
 ","             { return lexer::token (','); }
 ";"             { return lexer::token (';'); }
 
 {NOTNUMBER}     { return lexer::badtoken (TOK_NUMBER); }
-.               { lexer::badchar (*yytext); }
+.               {        lexer::badchar  (*yytext);    }
 
 %%

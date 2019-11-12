@@ -28,12 +28,16 @@ struct astree {
    ~astree();
    astree* adopt (astree* child1, astree* child2 = nullptr);
    astree* adopt_sym (astree* child, int symbol);
+   astree* change_symbol (int symbol);
+   astree* clear_lexinfo();
+   astree* copy_lloc(astree* that);
    void dump_node (FILE*);
    void dump_tree (FILE*, int depth = 0);
    static void dump (FILE* outfile, astree* tree);
    static void print (FILE* outfile, astree* tree, int depth = 0);
 };
 
+void print_hierarchy_lines(FILE* outfile, int depth);
 void destroy (astree* tree1, astree* tree2 = nullptr);
 
 void errllocprintf (const location&, const char* format, const char*);

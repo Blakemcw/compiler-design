@@ -41,11 +41,13 @@ struct lexer {
    static int token (int symbol);
    static int badtoken (int symbol);
    static void printtokens (FILE* outfile);
+   static void test_parse();
    static void delete_tokens();
 };
 
 struct parser {
    static astree* root;
+   static vector<astree*> test;
    static const char* get_tname (int symbol);
    static astree* create_node (void);
 };
