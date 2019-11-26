@@ -5,15 +5,17 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <bitset>
+
 using namespace std;
 
 #include "auxlib.h"
+#include "symbol.h"
 
-struct location {
-   size_t filenr;
-   size_t linenr;
-   size_t offset;
-};
+
+using symbol_table = unordered_map<string*,symbol*>;
+using symbol_entry = symbol_table::value_type;
 
 struct astree {
 
@@ -22,6 +24,13 @@ struct astree {
    location lloc;            // source location
    const string* lexinfo;    // pointer to lexical information
    vector<astree*> children; // children of this n-way node
+   // New fields for asg4:
+   attr_bitset att;
+   astree* parent = nullptr;
+   string attributes = "";
+   string declaration = "";
+   symbol_table* scope_table = nullptr;
+   int block = 0;
 
    // Functions.
    astree (int symbol, const location&, const char* lexinfo);

@@ -156,6 +156,12 @@ int main (int argc, char** argv) {
       lexer::printtokens (tok_out);
       fclose (tok_out);
 
+      // Write .sym file --------------------------------------------//
+      string sym = oc_filename + ".sym";
+      FILE*  sym_out = fopen(sym.c_str(), "w");
+      emit_sm_code(parser::root, sym_out);
+      fclose (sym_out);
+
       // Write .ast file --------------------------------------------//
       string ast = oc_filename + ".ast";
       FILE*  ast_out = fopen(ast.c_str(), "w");

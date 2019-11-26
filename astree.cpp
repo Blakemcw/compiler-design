@@ -11,10 +11,12 @@
 #include "string_set.h"
 #include "lyutils.h"
 
+
 astree::astree (int symbol_, const location& lloc_, const char* info) {
    symbol = symbol_;
    lloc = lloc_;
    lexinfo = string_set::intern (info);
+
    // vector defaults to empty -- no children
 }
 
@@ -32,13 +34,20 @@ astree::~astree() {
 }
 
 astree* astree::adopt (astree* child1, astree* child2) {
-   if (child1 != nullptr) children.push_back (child1);
-   if (child2 != nullptr) children.push_back (child2);
+   if (child1 != nullptr) {
+      children.push_back (child1);
+      child1->parent = this;
+   }
+   if (child2 != nullptr) {
+      children.push_back (child2);
+      child2->parent = this;
+   }
    return this;
 }
 
 astree* astree::adopt_sym (astree* child, int symbol_) {
    symbol = symbol_;
+   child->parent = this;
    return adopt (child);
 }
 
@@ -95,9 +104,17 @@ void astree::print (FILE* outfile, astree* tree, int depth) {
    print_hierarchy_lines(outfile, depth);
    const char *tname = parser::get_tname (tree->symbol);
    if (strstr (tname, "TOK_") == tname) tname += 4;
-   fprintf (outfile, "%s \"%s\" (%zd.%zd.%zd)\n",
-            tname, tree->lexinfo->c_str(),
-            tree->lloc.filenr, tree->lloc.linenr, tree->lloc.offset);
+
+   fprintf (outfile, "%s \"%s\" (%zd.%zd.%zd) {%i} %s%s\n",
+            tname,
+            tree->lexinfo->c_str(),
+            tree->lloc.filenr,
+            tree->lloc.linenr,
+            tree->lloc.offset,
+            tree->block,
+            tree->attributes.c_str(),
+            tree->declaration.c_str());
+   
    for (astree* child: tree->children) {
       astree::print (outfile, child, depth + 1);
    }

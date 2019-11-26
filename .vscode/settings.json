@@ -5,6 +5,8 @@
         "bitset": "cpp",
         "new": "cpp",
         "*.y": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp"
     }
 }

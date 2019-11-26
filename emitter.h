@@ -5,7 +5,7 @@
 
 #include "astree.h"
 
-void emit_sm_code (astree*);
+void emit_sm_code (astree*, FILE*);
 
 #endif
 
